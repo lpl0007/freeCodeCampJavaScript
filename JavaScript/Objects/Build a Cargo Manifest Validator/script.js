@@ -24,29 +24,39 @@ function validateManifest(manifest) {
 
   if (!manifest.hasOwnProperty("destination")) {
     newManifest.destination = "Missing";
-  } else if (!(manifest.destination.trim() && typeof manifest.destination === 'string')) {
+  } else if (!(typeof manifest.destination === 'string' && manifest.destination.trim())) {
     newManifest.destination = "Invalid";
   }
 
   if (!manifest.hasOwnProperty("weight")) {
     newManifest.weight = "Missing";
-  } else if (!(typeof manifest.weight === 'number' && manifest.weight > 0 && !Number.isNaN(manifest.weight))) {
+  } else if (!(typeof manifest.weight === 'number' && Number.isFinite(manifest.weight) && manifest.weight > 0)) {
     newManifest.weight = "Invalid";
   }
 
   if (!manifest.hasOwnProperty("unit")) {
     newManifest.unit = "Missing";
-  } else if (!(manifest.unit == "kg" || manifest.unit == "lb")) {
+  } else if (!(manifest.unit === "kg" || manifest.unit === "lb")) {
     newManifest.unit = "Invalid";
   }
 
   if (!manifest.hasOwnProperty("hazmat")) {
     newManifest.hazmat = "Missing";
-  } else if (!(manifest.hazmat == true || manifest.hazmat == false)) {
+  } else if (typeof manifest.hazmat !== "boolean") {
     newManifest.hazmat = "Invalid";
   }
 
   return newManifest;
 }
 
-function processManifest(manifest) {}
+function processManifest(manifest) {
+  const validationResult = validateManifest(manifest);
+
+  if (Object.keys(validationResult).length === 0) {
+    console.log(`Validation success: ${manifest.containerId}`);
+    console.log(`Total weight: ${normalizeUnits(manifest).weight} kg`);
+  } else {
+    console.log(`Validation error: ${manifest.containerId}`);
+    console.log(validationResult);
+  }
+}
