@@ -25,4 +25,16 @@ let contacts = [
   },
 ];
 
-function lookUpProfile(fName, prop) {}
+function lookUpProfile(fName, prop) {
+  const contact = contacts.find(contact => contact.firstName === fName);
+
+  if (!contact) {
+    return "No such contact";
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(contact, prop)) {
+    return "No such property";
+  }
+
+  return contact[prop];
+}
